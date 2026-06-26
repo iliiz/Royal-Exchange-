@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chat - Exchange Royal</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400;500;600;700&display=swap">
+
+    <style>
+        body {
+            font-family: 'General Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(0, 17, 82);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        :root {
+            --gradient-background-start: rgb(108, 0, 162);
+            --gradient-background-end: rgb(0, 17, 82);
+            --first-color: 18, 113, 255;
+            --second-color: 221, 74, 255;
+            --third-color: 100, 220, 255;
+            --fourth-color: 200, 50, 50;
+            --fifth-color: 180, 180, 50;
+            --pointer-color: 140, 100, 255;
+            --size: 80%;
+            --blending-value: hard-light;
+        }
+
+        .bg-gradient-container {
+            background: linear-gradient(40deg, var(--gradient-background-start), var(--gradient-background-end));
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        @keyframes moveInCircle {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes moveVertical {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(500px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes moveHorizontal {
+            0% { transform: translateX(0px) translateY(-100px); }
+            50% { transform: translateX(300px) translateY(100px); }
+            100% { transform: translateX(0px) translateY(-100px); }
+        }
+
+        .animate-first { animation: moveInCircle 30s ease infinite; }
+        .animate-second { animation: moveVertical 30s ease infinite; }
+        .animate-third { animation: moveInCircle 40s linear infinite; }
+        .animate-fourth { animation: moveHorizontal 40s ease infinite; }
+        .animate-fifth { animation: moveInCircle 20s ease infinite; }
+
+        .glass-chat {
+            background: rgba(10, 14, 43, 0.45);
+            backdrop-filter: blur(25px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center relative w-screen h-screen">
+
+    <div class="bg-gradient-container">
+        <svg class="hidden">
+            <defs>
+                <filter id="blurMe">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo" />
+                    <feBlend in="SourceGraphic" in2="goo" />
+                </filter>
+            </defs>
+        </svg>
+        <div class="gradients-container h-full w-full opacity-80" style="filter: url(#blurMe) blur(40px);">
+            <div class="absolute animate-first opacity-100" style="background: radial-gradient(circle at center, rgb(var(--first-color)) 0, rgba(var(--first-color), 0) 50%) no-repeat; blend-mode: var(--blending-value); mix-blend-mode: var(--blending-value); width: var(--size); height: var(--size); top: calc(50% - var(--size)/2); left: calc(50% - var(--size)/2); transform-origin: center center;"></div>
+            <div class="absolute animate-second opacity-100" style="background: radial-gradient(circle at center, rgba(var(--second-color), 0.8) 0, rgba(var(--second-color), 0) 50%) no-repeat; blend-mode: var(--blending-value); mix-blend-mode: var(--blending-value); width: var(--size); height: var(--size); top: calc(50% - var(--size)/2); left: calc(50% - var(--size)/2); transform-origin: calc(50% - 400px);"></div>
+            <div class="absolute animate-third opacity-100" style="background: radial-gradient(circle at center, rgba(var(--third-color), 0.8) 0, rgba(var(--third-color), 0) 50%) no-repeat; blend-mode: var(--blending-value); mix-blend-mode: var(--blending-value); width: var(--size); height: var(--size); top: calc(50% - var(--size)/2); left: calc(50% - var(--size)/2); transform-origin: calc(50% + 400px);"></div>
+            <div class="absolute animate-fourth opacity-70" style="background: radial-gradient(circle at center, rgba(var(--fourth-color), 0.8) 0, rgba(var(--fourth-color), 0) 50%) no-repeat; blend-mode: var(--blending-value); mix-blend-mode: var(--blending-value); width: var(--size); height: var(--size); top: calc(50% - var(--size)/2); left: calc(50% - var(--size)/2); transform-origin: calc(50% - 200px);"></div>
+            <div class="absolute animate-fifth opacity-100" style="background: radial-gradient(circle at center, rgba(var(--fifth-color), 0.8) 0, rgba(var(--fifth-color), 0) 50%) no-repeat; blend-mode: var(--blending-value); mix-blend-mode: var(--blending-value); width: var(--size); height: var(--size); top: calc(50% - var(--size)/2); left: calc(50% - var(--size)/2); transform-origin: calc(50% - 800px) calc(50% + 800px);"></div>
+            <div id="interactive-pointer" class="absolute opacity-60 pointer-events-none" style="background: radial-gradient(circle at center, rgba(var(--pointer-color), 0.8) 0, rgba(var(--pointer-color), 0) 50%) no-repeat; blend-mode: var(--blending-value); mix-blend-mode: var(--blending-value); width: 400px; height: 400px; top: -200px; left: -200px; transition: transform 0.1s ease-out;"></div>
+        </div>
+    </div>
+
+    <div class="relative z-10 w-full max-w-4xl h-[85vh] mx-4 flex rounded-2xl overflow-hidden glass-chat">
+        
+        <div class="w-1/3 border-r border-white/5 bg-black/10 p-6 flex flex-col justify-between hidden md:flex">
+            <div>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold shadow-md text-white">ER</div>
+                    <div>
+                        <h3 class="font-bold text-sm tracking-wide text-white">Exchange Royal</h3>
+                        <p class="text-xs text-white/40">Secure Network</p>
+                    </div>
+                </div>
+                
+                <h4 class="text-xs uppercase font-semibold text-white/30 tracking-widest mb-4">Chatting With</h4>
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div class="relative">
+                        <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center font-semibold text-sm text-white">
+                            {{ receiver_user.username[:2].upper() }}
+                        </div>
+                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[#0a0e2b]"></div>
+                    </div>
+                    <div>
+                        <h5 class="text-sm font-semibold text-white">{{ receiver_user.username }}</h5>
+                        <p class="text-[10px] text-emerald-400">Online</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-xs text-white/30 flex items-center gap-2">
+                <i data-lucide="lock" class="w-4 h-4 text-cyan-400"></i>
+                End-to-end encrypted connection
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col justify-between bg-black/5">
+            
+            <div class="p-4 border-b border-white/5 flex justify-between items-center bg-black/15">
+                <div class="flex items-center gap-3">
+                    <div class="md:hidden w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-semibold text-xs text-white">
+                        {{ receiver_user.username[:2].upper() }}
+                    </div>
+                    <span class="text-sm font-medium md:hidden text-white">{{ receiver_user.username }}</span>
+                </div>
+                <a href="/communicate" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition text-white/70 hover:text-white">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4 custom-scrollbar flex flex-col">
+                {% for msg in messages %}
+                    {% if msg.sender_id == user.id %}
+                    <div class="flex gap-3 max-w-[80%] ml-auto flex-row-reverse items-start">
+                        <div class="w-8 h-8 rounded-full bg-purple-600 flex-shrink-0 flex items-center justify-center font-bold text-xs text-white">U</div>
+                        <div class="p-3 rounded-2xl rounded-tr-none bg-indigo-600/50 border border-indigo-500/20 text-sm leading-relaxed text-white text-right">
+                            <p class="text-white/90 break-words">{{ msg.content }}</p>
+                            <span class="block text-[9px] text-indigo-200/50 text-left mt-1">Sent</span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="flex gap-3 max-w-[80%] mr-auto items-start">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex-shrink-0 flex items-center justify-center font-bold text-xs text-white">
+                            {{ receiver_user.username[:2].upper() }}
+                        </div>
+                        <div class="p-3 rounded-2xl rounded-tl-none bg-white/10 border border-white/5 text-sm leading-relaxed text-white">
+                            <p class="text-white/90 break-words">{{ msg.content }}</p>
+                            <span class="block text-[9px] text-white/30 text-right mt-1">Received</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="p-4 border-t border-white/5 bg-black/20">
+                <form id="chat-form" class="flex gap-3 items-center">
+                    <input name="text" type="text" id="message-input" autocomplete="off" placeholder="Type your message here..." class="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-indigo-500/50 focus:outline-none text-sm transition text-white placeholder:text-white/30">
+                    <button type="submit" class="p-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-md flex items-center justify-center">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const interactive = document.getElementById('interactive-pointer');
+        let curX = 0, curY = 0, tgX = 0, tgY = 0;
+
+        window.addEventListener('mousemove', (event) => {
+            tgX = event.clientX;
+            tgY = event.clientY;
+        });
+
+        function movePointer() {
+            curX += (tgX - curX) / 20;
+            curY += (tgY - curY) / 20;
+            interactive.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`;
+            requestAnimationFrame(movePointer);
+        }
+        movePointer();
+
+        const chatMessages = document.getElementById('chat-messages');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message-input');
+
+        chatForm.addEventListener('submit', async(e) => {
+            e.preventDefault();
+            if (!messageInput.value.trim()) return;
+
+            const receiverId = "{{ receiver_user.id }}";
+            const text = messageInput.value.trim();
+            const formData = new FormData(chatForm);
+            formData.append('receiverId', receiverId);
+            const data = await fetch("/chat", {method: "POST", body: formData});
+            const response = await data.json();
+
+            if (response.success) {
+                const userMessageHtml = `
+                    <div class="flex gap-3 max-w-[80%] ml-auto flex-row-reverse items-start">
+                        <div class="w-8 h-8 rounded-full bg-purple-600 flex-shrink-0 flex items-center justify-center font-bold text-xs text-white">U</div>
+                        <div class="p-3 rounded-2xl rounded-tr-none bg-indigo-600/50 border border-indigo-500/20 text-sm leading-relaxed text-white text-right">
+                            <p class="text-white/90 break-words">${text}</p>
+                            <span class="block text-[9px] text-indigo-200/50 text-left mt-1">Just Now</span>
+                        </div>
+                    </div>
+                `;
+                chatMessages.insertAdjacentHTML('beforeend', userMessageHtml);
+                messageInput.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;              
+            }
+        });
+    </script>
+</body>
+</html>

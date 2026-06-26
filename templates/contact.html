@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacts - Exchange Royal</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400;500;600;700&display=swap">
+
+    <style>
+        body {
+            font-family: 'General Sans', sans-serif;
+            background-color: #030014;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .ambient-glow {
+            background: radial-gradient(circle at 50% 50%, rgba(99, 68, 245, 0.15) 0%, rgba(3, 0, 20, 0) 70%);
+        }
+
+        #particles-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .glass-box {
+            backdrop-filter: blur(20px) brightness(0.9);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+        }
+    </style>
+</head>
+<body class="w-full h-screen relative flex flex-col items-center justify-start antialiased text-white p-4 md:p-8">
+
+    <canvas id="particles-canvas"></canvas>
+    <div class="absolute inset-0 ambient-glow pointer-events-none z-0"></div>
+
+    <a href="/home" class="absolute top-4 right-4 z-50 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition text-white/70 hover:text-white border border-white/5">
+        <i data-lucide="x" class="w-4 h-4"></i>
+    </a>
+
+    <header class="relative z-10 w-full max-w-4xl flex items-center justify-between py-4 px-6 glass-box rounded-2xl mb-6 mt-8 md:mt-4">
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-sm shadow-md">ER</div>
+            <h1 class="text-lg font-bold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">CONTACTS</h1>
+        </div>
+        <nav class="flex items-center gap-4">
+            <a href="/profile" class="text-sm font-medium text-white/70 hover:text-cyan-400 transition flex items-center gap-1.5">
+                <i data-lucide="user" class="w-4 h-4"></i> Profile
+            </a>
+
+            <form class="logout-form" action="/logout" method="post">
+                <button type="submit" class="logout-btn px-3.5 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs font-medium text-rose-400 hover:bg-rose-500/20 transition flex items-center gap-1.5">
+                    <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Logout
+                </button>
+            </form>
+        </nav>
+    </header>
+
+    <main class="relative z-10 w-full max-w-2xl flex-1 flex flex-col glass-box rounded-3xl overflow-hidden h-[70vh]">
+        
+        <div class="p-6 border-b border-white/5 bg-white/[0.01] flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i>
+                <p class="text-sm font-semibold tracking-wide text-white/90">Active Users Network</p>
+            </div>
+            <span class="text-[11px] px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 font-medium">Direct Chat Available</span>
+        </div>
+
+        <div class="contact-list flex-1 p-4 overflow-y-auto space-y-2 custom-scrollbar">
+            {% for u in users %}
+            <a href="/chat?receiver_id={{ u.id }}" class="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-cyan-500/30 hover:bg-white/[0.05] transition-all duration-200 group">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 flex items-center justify-center font-bold text-cyan-400 text-sm group-hover:from-cyan-500 group-hover:text-black transition-all duration-300">
+                        {{ u.username[:2].upper() }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-white/90 group-hover:text-cyan-400 transition">{{ u.username }}</p>
+                        <p class="text-[11px] text-white/40 mt-0.5">Click to open chat window</p>
+                    </div>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5 group-hover:bg-cyan-400 group-hover:text-black transition-all duration-300">
+                    <i data-lucide="message-square" class="w-4 h-4 text-white/40 group-hover:text-black"></i>
+                </div>
+            </a>
+            {% else %}
+            <div class="h-full flex flex-col items-center justify-center text-center p-8 opacity-40">
+                <i data-lucide="user-x" class="w-12 h-12 mb-3"></i>
+                <p class="text-sm">No active users found on the network.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const sparks = [];
+        const maxSparks = 45; 
+        const colors = ['#18CCFC', '#6344F5', '#AE48FF'];
+
+        class Spark {
+            constructor() { this.reset(); }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.length = Math.random() * 60 + 40; 
+                this.speedX = Math.random() * 2 + 1.5;
+                this.speedY = Math.random() * 1.5 + 1;
+                this.alpha = 0;
+                this.fadeSpeed = Math.random() * 0.02 + 0.01;
+                this.isFadingOut = false;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.width = Math.random() * 1.5 + 1;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (!this.isFadingOut) {
+                    this.alpha += this.fadeSpeed;
+                    if (this.alpha >= 1) { this.alpha = 1; this.isFadingOut = true; }
+                } else {
+                    this.alpha -= this.fadeSpeed * 0.6; 
+                    if (this.alpha <= 0) { this.reset(); }
+                }
+
+                if (this.x > canvas.width || this.y > canvas.height) { this.reset(); }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.lineWidth = this.width;
+                ctx.lineCap = 'round';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.strokeStyle = this.color;
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x - this.speedX * (this.length / 5), this.y - this.speedY * (this.length / 5));
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < maxSparks; i++) {
+            setTimeout(() => { sparks.push(new Spark()); }, Math.random() * 3000);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            sparks.forEach(spark => { spark.update(); spark.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

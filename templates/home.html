@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Exchange Royal</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap">
+    
+    <style>
+        body {
+            font-family: 'General Sans', sans-serif;
+            background-color: #030014;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -10;
+            pointer-events: none;
+        }
+        .glass-card {
+            background: rgba(18, 15, 36, 0.45);
+            backdrop-filter: blur(14px);
+            border: 1px border;
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen flex flex-col">
+
+    <div id="canvas-container"></div>
+
+    <nav class="w-full py-4 px-6 flex justify-between items-center glass-card border-b border-white/5 relative z-20">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-sm">ER</div>
+            <span class="text-lg font-semibold tracking-wider bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Exchange Royal</span>
+        </div>
+        <div class="flex items-center gap-6 text-sm text-white/70">
+            <div class="h-4 w-[1px] bg-white/20"></div>
+            <a href="/communicate" class="text-indigo-400 font-medium" style="color: white">Communicate</a>
+        </div>
+        <div class="flex items-center gap-6 text-sm text-white/70">
+            <div class="h-4 w-[1px] bg-white/20"></div>
+            <a href="/profile" class="text-indigo-400 font-medium" style="color: white">Profile</a>
+        </div>
+
+        <div class="flex items-center gap-6 text-sm text-white/70">
+            <div class="h-4 w-[1px] bg-white/20"></div>
+            <span class="text-indigo-400 font-medium">User Dashboard</span>
+        </div>
+    </nav>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-6 md:p-8 relative z-10 space-y-8">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight bg-gradient-to-r from-white via-gray-200 to-gray-500 bg-clip-text text-transparent">Live Market Monitor</h1>
+                <p class="text-white/50 text-sm mt-1">Real-time currency exchange rates against Turkish Lira (TRY)</p>
+            </div>
+            <div class="text-xs text-white/40 bg-white/5 px-3 py-2 rounded-lg border border-white/10 backdrop-blur">
+                Live Status: <span class="text-emerald-400 font-semibold animate-pulse">● Connected</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-indigo-500/30 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 blur-2xl rounded-full pointer-events-none"></div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-xs font-semibold text-indigo-400 uppercase tracking-widest">USD / TRY</span>
+                        <h3 class="text-2xl font-bold mt-1">US Dollar</h3>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-between items-baseline">
+                    <span class="text-3xl font-bold tracking-tight">{{ dollar.cost }} <span class="text-xs font-normal text-white/40">TRY</span></span>
+                </div>
+                <div class="mt-4 pt-4 border-t border-white/5 flex justify-between text-xs text-white/40">
+                </div>
+            </div>
+
+            <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-purple-500/30 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 blur-2xl rounded-full pointer-events-none"></div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-xs font-semibold text-purple-400 uppercase tracking-widest">GBP / TRY</span>
+                        <h3 class="text-2xl font-bold mt-1">UK Pound</h3>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-between items-baseline">
+                    <span class="text-3xl font-bold tracking-tight">{{ pound.cost }} <span class="text-xs font-normal text-white/40">TRY</span></span>
+                </div>
+                <div class="mt-4 pt-4 border-t border-white/5 flex justify-between text-xs text-white/40">
+                </div>
+            </div>
+
+            <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-amber-500/30 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 blur-2xl rounded-full pointer-events-none"></div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-xs font-semibold text-amber-400 uppercase tracking-widest">EUR / TRY</span>
+                        <h3 class="text-2xl font-bold mt-1">Euro</h3>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-between items-baseline">
+                    <span class="text-3xl font-bold tracking-tight">{{ euro.cost }} <span class="text-xs font-normal text-white/40">TRY</span></span>
+                </div>
+                <div class="mt-4 pt-4 border-t border-white/5 flex justify-between text-xs text-white/40">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 overflow-hidden">
+            <h3 class="text-xl font-bold mb-6 tracking-tight">Advanced Market Rates</h3>
+            <div class="overflow-x-auto w-full">
+                <table class="w-full text-left text-sm text-white/70">
+                    <thead class="text-xs uppercase tracking-wider text-white/40 border-b border-white/10">
+                        <tr>
+                            <th class="pb-4 font-semibold">Currency Pair</th>
+                            <th class="pb-4 font-semibold">Live Price</th>
+                            <th class="pb-4 font-semibold text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        <tr class="hover:bg-white/5 transition duration-150">
+                            <td class="py-4 font-medium text-white flex items-center gap-2">
+                                <span class="text-base">US / TR</span> USD / TRY
+                            </td>
+                            <td class="py-4 font-semibold text-white">{{ dollar.cost }} Lira</td>
+                            <td class="py-4 text-right"><a href="/sale/dollar" class="px-4 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-medium text-xs transition">Trade</a></td>
+                        </tr>
+                        <tr class="hover:bg-white/5 transition duration-150">
+                            <td class="py-4 font-medium text-white flex items-center gap-2">
+                                <span class="text-base">UK / TR</span> GBP / TRY
+                            </td>
+                            <td class="py-4 font-semibold text-white">{{ pound.cost }} Lira</td>
+                            <td class="py-4 text-right"><a href="/sale/pound" class="px-4 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-medium text-xs transition">Trade</a></td>
+                        </tr>
+                        <tr class="hover:bg-white/5 transition duration-150">
+                            <td class="py-4 font-medium text-white flex items-center gap-2">
+                                <span class="text-base">EU / TP</span> EUR / TRY
+                            </td>
+                            <td class="py-4 font-semibold text-white">{{ euro.cost }} Lira</td>
+                            <td class="py-4 text-right"><a href="/sale/euro" class="px-4 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-medium text-xs transition">Trade</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const container = document.getElementById('canvas-container');
+        
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        const uniforms = {
+            iTime: { value: 0 },
+            iResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+        };
+
+        const vertexShader = `
+            void main() {
+                gl_Position = vec4(position, 1.0);
+            }
+        `;
+
+        const fragmentShader = `
+            uniform float iTime;
+            uniform vec2 iResolution;
+
+            #define NUM_OCTAVES 3
+
+            float rand(vec2 n) {
+                return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+            }
+
+            float noise(vec2 p) {
+                vec2 ip = floor(p);
+                vec2 u = fract(p);
+                u = u*u*(3.0-2.0*u);
+
+                float res = mix(
+                    mix(rand(ip), rand(ip + vec2(1.0, 0.0)), u.x),
+                    mix(rand(ip + vec2(0.0, 1.0)), rand(ip + vec2(1.0, 1.0)), u.x), u.y);
+                return res * res;
+            }
+
+            float fbm(vec2 x) {
+                float v = 0.0;
+                float a = 0.3;
+                vec2 shift = vec2(100);
+                mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.5));
+                for (int i = 0; i < NUM_OCTAVES; ++i) {
+                    v += a * noise(x);
+                    x = rot * x * 2.0 + shift;
+                    a *= 0.4;
+                }
+                return v;
+            }
+
+            void main() {
+                vec2 shake = vec2(sin(iTime * 1.2) * 0.005, cos(iTime * 2.1) * 0.005);
+                vec2 p = ((gl_FragCoord.xy + shake * iResolution.xy) - iResolution.xy * 0.5) / iResolution.y * mat2(6.0, -4.0, 4.0, 6.0);
+                vec2 v;
+                vec4 o = vec4(0.0);
+
+                float f = 2.0 + fbm(p + vec2(iTime * 5.0, 0.0)) * 0.5;
+
+                for (int i = 0; i < 35; i++) {
+                    float fi = float(i);
+                    v = p + cos(fi * fi + (iTime + p.x * 0.08) * 0.025 + fi * vec2(13.0, 11.0)) * 3.5 + vec2(sin(iTime * 3.0 + fi) * 0.003, cos(iTime * 3.5 - fi) * 0.003);
+                    float tailNoise = fbm(v + vec2(iTime * 0.5, fi)) * 0.3 * (1.0 - (fi / 35.0));
+                    
+                    vec4 auroraColors = vec4(
+                        0.05 + 0.25 * sin(fi * 0.15 + iTime * 0.3),
+                        0.2 + 0.4 * cos(fi * 0.2 + iTime * 0.4),
+                        0.7 + 0.3 * sin(fi * 0.3 + iTime * 0.2),
+                        1.0
+                    );
+                    
+                    vec4 currentContribution = auroraColors * exp(sin(fi * fi + iTime * 0.8)) / length(max(v, vec2(v.x * f * 0.015, v.y * 1.5)));
+                    float thinnessFactor = smoothstep(0.0, 1.0, fi / 35.0) * 0.6;
+                    o += currentContribution * (1.0 + tailNoise * 0.8) * thinnessFactor;
+                }
+
+                o = tanh(pow(o / 100.0, vec4(1.6)));
+                gl_FragColor = o * 1.6;
+            }
+        `;
+
+        const material = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader
+        });
+
+        const geometry = new THREE.PlaneGeometry(2, 2);
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        function animate() {
+            uniforms.iTime.value += 0.01;
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            uniforms.iResolution.value.set(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

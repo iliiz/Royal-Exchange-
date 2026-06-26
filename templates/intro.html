@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power AI - Exchange Royal</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap">
+    
+    <style>
+        :root {
+            --background: 260 87% 3%;
+            --foreground: 40 6% 95%;
+            --hero-sub: 40 6% 82%;
+        }
+
+        body {
+            font-family: 'General Sans', sans-serif;
+            background: hsl(var(--background));
+            color: hsl(var(--foreground));
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .font-generalSans {
+            font-family: 'General Sans', sans-serif;
+        }
+
+        .nav-item {
+            color: rgba(255, 255, 255, 0.9);
+            transition: color 0.2s;
+        }
+        .nav-item:hover {
+            color: hsl(var(--foreground));
+        }
+
+        .btn-heroSecondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: hsl(var(--foreground));
+            transition: background 0.2s;
+        }
+        .btn-heroSecondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marquee 20s linear infinite;
+        }
+
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.01);
+            background-blend-mode: luminosity;
+            backdrop-filter: blur(4px);
+            border: none;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .liquid-glass::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero-wrapper relative min-h-screen flex flex-col overflow-hidden text-foreground">
+  
+  <video
+    id="hero-video"
+    src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_065045_c44942da-53c6-4804-b734-f9e07fc22e08.mp4"
+    class="absolute inset-0 w-full h-full object-cover pointer-events-none"
+    style="opacity: 0;"
+    muted
+    playsinline
+  ></video>
+
+  <div class="absolute top-1/2 left-1/2 w-[984px] h-[527px] bg-gray-950 opacity-90 blur-[82px] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"></div>
+
+  <nav class="w-full py-5 px-8 flex justify-between items-center relative z-10">
+    <img src="/src/assets/logo.png" alt="Logo" class="h-8" />
+    <div class="flex gap-8">
+      <button class="nav-item" id="communicate">way to communicate with us</button>
+      <button class="nav-item" id="profile">Profile</button>
+      <button class="nav-item" id="login">login</button>
+    </div>
+    <button class="btn-heroSecondary rounded-full px-4 py-2" id="signup">Sign Up</button>
+  </nav>
+  
+  <div class="w-full mt-[3px] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent relative z-10"></div>
+
+  <div class="flex-1 flex items-center justify-center relative z-10 text-center">
+    <div>
+      <h1 class="text-[120px] md:text-[220px] font-generalSans font-normal leading-[1.02] tracking-[-0.024em]">
+        <span class="text-white">Exchange with</span>
+        <span class="bg-gradient-to-l from-indigo-500 via-purple-500 to-amber-400 bg-clip-text text-transparent inline-block">ROYAL</span>
+      </h1>
+      <p class="text-[hsl(40,6%,82%)] text-lg leading-8 max-w-md mt-[9px] opacity-80 mx-auto">
+        one of the most powerful exchanges in istanbul
+      </p>
+      <button class="btn-heroSecondary px-[29px] py-[24px] mt-[25px] rounded-md font-semibold" id="start">get start</button>
+    </div>
+  </div>
+
+  <div class="relative z-10 pb-10">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-12 items-center px-6">
+      <p class="text-white/50 text-sm whitespace-nowrap">Currencies</p>
+      <div class="overflow-hidden flex-1 w-full">
+        <div class="animate-marquee gap-16">
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">D</div><span class="text-base font-semibold text-white">Dollar</span></div>
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">T</div><span class="text-base font-semibold text-white">Tele</span></div>
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">P</div><span class="text-base font-semibold text-white">Pound</span></div>
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">E</div><span class="text-base font-semibold text-white">Euro</span></div>
+
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">D</div><span class="text-base font-semibold text-white">Dollar</span></div>
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">T</div><span class="text-base font-semibold text-white">Tele</span></div>
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">P</div><span class="text-base font-semibold text-white">Pound</span></div>
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">E</div><span class="text-base font-semibold text-white">Euro</span></div>
+
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">D</div><span class="text-base font-semibold text-white">Dollar</span></div>
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">T</div><span class="text-base font-semibold text-white">Tele</span></div>
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">P</div><span class="text-base font-semibold text-white">Pound</span></div>
+          <div class="flex items-center gap-2"><div class="liquid-glass w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-xs">E</div><span class="text-base font-semibold text-white">Euro</span></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    const video = document.getElementById("hero-video");
+    let animationFrameId;
+
+    function fadeIn() {
+      let opacity = 0;
+      function step() {
+        opacity += 0.03; 
+        if (opacity > 1) opacity = 1;
+        video.style.opacity = opacity;
+        if (opacity < 1) {
+          animationFrameId = requestAnimationFrame(step);
+        }
+      }
+      animationFrameId = requestAnimationFrame(step);
+    }
+
+    function fadeOut() {
+      let opacity = 1;
+      function step() {
+        opacity -= 0.03; 
+        if (opacity < 0) opacity = 0;
+        video.style.opacity = opacity;
+        if (opacity > 0) {
+          animationFrameId = requestAnimationFrame(step);
+        } else {
+          setTimeout(() => {
+            video.currentTime = 0;
+            video.play().catch(err => console.log("autoplay encountered an error."));
+          }, 100);
+        }
+      }
+      animationFrameId = requestAnimationFrame(step);
+    }
+
+    video.addEventListener("play", fadeIn);
+    video.addEventListener("ended", fadeOut);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        video.play().catch(error => {
+            console.log("autoplay was blocked by broswer.");
+        });
+    });
+    const communicate = document.getElementById('communicate');
+    const profile = document.getElementById('profile');
+    const login = document.getElementById('login');
+    const signup = document.getElementById('signup');
+    const start = document.getElementById('start');
+
+
+    async function initNav() {
+      let isLoggedIn = false;
+      try {
+        const res = await fetch("/");
+        const data = await res.json();
+        isLoggedIn = data.success === true;
+      } catch (_) {}
+
+      login.addEventListener('click', () => {
+        window.location.href = '/login';
+      });
+      signup.addEventListener('click', () => {
+        window.location.href = '/signup';
+      });
+      communicate.addEventListener('click', () => {
+        window.location.href = '/communicate';
+      });
+      profile.addEventListener('click', () => {
+        window.location.href = isLoggedIn ? '/profile' : '/login';
+      });
+      start.addEventListener('click', () => {
+        window.location.href = 'home';
+      });
+    }
+
+    initNav();
+
+</script>
+</body>
+</html>

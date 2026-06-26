@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Account Info - Exchange Royal</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        .dark {
+            --background: #030014;
+            --foreground: #ffffff;
+        }
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+        #shader-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .glass-profile-card {
+            backdrop-filter: blur(20px) brightness(0.85);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+        }
+        .info-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full relative flex items-center justify-center p-4">
+
+    <canvas id="shader-canvas"></canvas>
+
+    <main class="relative z-10 w-full max-w-xl glass-profile-card rounded-3xl overflow-hidden transition-all duration-300 select-none">
+        
+        <div class="p-8 pb-6 border-b border-white/5 bg-white/[0.01] flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+            <div class="flex flex-col sm:flex-row items-center gap-5">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-2xl font-bold tracking-wider shadow-xl shadow-cyan-500/20 text-white">
+                    {{user.username[0] | upper}}
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold text-white tracking-wide">Account Details</h2>
+                    <p class="text-xs text-cyan-400/80 mt-0.5 flex items-center justify-center sm:justify-start gap-1.5">
+                        <span class="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                        Verified Profile
+                    </p>
+                </div>
+            </div>
+            
+            <a href="/home" class="px-3.5 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[11px] font-semibold text-purple-400 uppercase tracking-wider">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </a>
+        </div>
+
+        <div class="p-8 space-y-5">
+            
+            <div class="flex items-center justify-between p-4 rounded-xl info-box">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center border border-white/5">
+                        <i data-lucide="user" class="w-4 h-4 text-white/40"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider text-white/30">Username</p>
+                        <p class="text-sm font-medium text-white/90 mt-0.5">{{ user.username }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between p-4 rounded-xl info-box">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center border border-white/5">
+                        <i data-lucide="mail" class="w-4 h-4 text-white/40"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider text-white/30">Email Address</p>
+                        <p class="text-sm font-medium text-white/90 mt-0.5">{{ user.email }}</p>
+                    </div>
+                </div>
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 mr-2"></i>
+            </div>
+
+            <div class="flex items-center justify-between p-4 rounded-xl info-box">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center border border-white/5">
+                        <i data-lucide="calendar" class="w-4 h-4 text-white/40"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider text-white/30">Registration Date</p>
+                        <p class="text-sm font-medium text-white/70 mt-0.5">{{user.created_at}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent my-4"></div>
+
+            <div class="flex gap-3">
+                <a href="/communicate" class="flex-1 py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black font-semibold text-xs transition shadow-lg shadow-cyan-400/10 flex items-center justify-center gap-2">
+                    <i data-lucide="message-square" class="w-4 h-4"></i> Support Channel
+                </a>
+                <form action="/logout" method="post" class="px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white/80 font-medium text-xs hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/20 transition flex items-center justify-center gap-2">
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        const canvas = document.getElementById('shader-canvas');
+        const gl = canvas.getContext('webgl');
+
+        if (!gl) { console.error("WebGL not supported."); }
+
+        const vsSource = `
+            attribute vec2 aPosition;
+            void main() { gl_Position = vec4(aPosition, 0.0, 1.0); }
+        `;
+
+        const fsSource = `
+            precision highp float;
+            uniform float iTime;
+            uniform vec2 iResolution;
+            uniform vec3 uBackgroundColor;
+
+            mat2 rotate2d(float angle){ 
+                float c=cos(angle), s=sin(angle); 
+                return mat2(c, -s, s, c); 
+            }
+            float variation(vec2 v1, vec2 v2, float strength, float speed){ 
+                return sin(dot(normalize(v1), normalize(v2))*strength + iTime*speed)/100.0; 
+            }
+            vec3 paintCircle(vec2 uv, vec2 center, float rad, float width){
+                vec2 diff = center-uv;
+                float len = length(diff);
+                len += variation(diff, vec2(0.,1.), 5., 2.);
+                len -= variation(diff, vec2(1.,0.), 5., 2.);
+                float circle = smoothstep(rad-width, rad, len) - smoothstep(rad, rad+width, len);
+                return vec3(circle);
+            }
+            void main(){
+                vec2 uv = gl_FragCoord.xy / iResolution.xy;
+                uv.x *= 1.5; uv.x -= 0.25;
+                float mask = 0.0;
+                float radius = .35;
+                vec2 center = vec2(.5);
+                
+                mask += paintCircle(uv, center, radius, .035).r;
+                mask += paintCircle(uv, center, radius-.018, .01).r;
+                mask += paintCircle(uv, center, radius+.018, .005).r;
+                
+                vec2 v = rotate2d(iTime) * uv;
+                vec3 foregroundColor = vec3(v.x, v.y, .7 - v.y * v.x);
+                vec3 color = mix(uBackgroundColor, foregroundColor, mask);
+                color = mix(color, vec3(1.), paintCircle(uv, center, radius, .003).r);
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -1, -1,  1, -1, -1,  1,
+            -1,  1,  1, -1,  1,  1
+        ]), gl.STATIC_DRAW);
+
+        const aPosition = gl.getAttribLocation(program, 'aPosition');
+        gl.enableVertexAttribArray(aPosition);
+        gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
+
+        const iTimeLoc = gl.getUniformLocation(program, 'iTime');
+        const iResLoc = gl.getUniformLocation(program, 'iResolution');
+        const uBgColorLoc = gl.getUniformLocation(program, 'uBackgroundColor');
+
+        gl.uniform3fv(uBgColorLoc, new Float32Array([0.0, 0.0, 0.0]));
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function render(time) {
+            gl.uniform1f(iTimeLoc, time * 0.001);
+            gl.uniform2f(iResLoc, canvas.width, canvas.height);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(render);
+        }
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>

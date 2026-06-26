@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction Receipt - Exchange Royal</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400;500;600;700&display=swap">
+  
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'General Sans', sans-serif;
+    }
+    #shader-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -10; 
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-white flex items-center justify-center min-h-screen relative">
+
+  <canvas id="shader-canvas"></canvas>
+
+  <div class="relative z-10 w-full max-w-md mx-4 p-8 rounded-3xl bg-black/50 border border-white/10 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:border-white/20 text-left">
+    
+    <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
+      <h2 class="text-lg font-bold tracking-tight text-zinc-100">Transaction Receipt</h2>
+      
+      {% if status == 'success' %}
+      <div class="p-2.5 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 text-emerald-400">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11"/></svg>
+      </div>
+      {% else %}
+      <div class="p-2.5 bg-rose-500/10 rounded-2xl border border-rose-500/20 text-rose-400">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if status == 'success' %}
+      <div class="text-center my-4">
+        <span class="text-xs uppercase tracking-widest text-emerald-400 font-semibold">Payment Approved</span>
+        <h1 class="text-3xl font-extrabold text-zinc-100 mt-1 font-mono">{{ amount }} <span class="text-sm font-sans text-zinc-400">Liras</span></h1>
+      </div>
+
+      <div class="space-y-3 my-6 border-t border-b border-white/5 py-4 text-sm font-medium">
+        <div class="flex justify-between">
+          <span class="text-zinc-400">Ref ID / Tracking Code</span>
+          <span class="font-mono text-zinc-200 tracking-wider">{{ ref_id }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-zinc-400">Purchased Amount</span>
+          <span class="text-zinc-200 font-mono">{{ currency_count }} {{ currency_type | uppercase }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-zinc-400">Gateway Status</span>
+          <span class="text-emerald-400">Verified</span>
+        </div>
+      </div>
+    {% else %}
+      <div class="text-center my-4">
+        <span class="text-xs uppercase tracking-widest text-rose-400 font-semibold">Payment Failed</span>
+        <p class="text-sm text-zinc-300 mt-3 bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl leading-relaxed">
+          {{ message }}
+        </p>
+      </div>
+    {% endif %}
+
+    <div class="space-y-2 mt-6">
+      <a href="/home" class="block w-full text-center bg-zinc-800 hover:bg-zinc-700 text-white font-medium text-sm rounded-xl py-3 transition-all duration-200">
+        Return to Dashboard
+      </a>
+    </div>
+    
+  </div>
+
+  <script>
+    const canvas = document.getElementById('shader-canvas');
+    const gl = canvas.getContext('webgl2');
+
+    if (!gl) {
+      console.error("WebGL 2 not supported.");
+    }
+
+    const vsSource = `#version 300 es
+      in vec2 position;
+      void main() {
+        gl_Position = vec4(position, 0.0, 1.0);
+      }
+    `;
+
+    const fsSource = `#version 300 es
+      precision highp float;
+      out vec4 fragColor;
+      
+      uniform vec2 u_resolution;
+      uniform float u_time;
+
+      vec3 hsl2rgb(vec3 c) {
+        vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, 1.0);
+        return c.z + c.y * (rgb-0.5)*(1.0-abs(2.0*c.z-1.0));
+      }
+
+      void main() {
+        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+        uv.x *= u_resolution.x / u_resolution.y; 
+
+        float time = u_time * 0.4; 
+
+        for(float i = 1.0; i < 10.0; i++) {
+          uv.x += sin(uv.y + time + i * 0.25) * 0.15;
+          uv.y += cos(uv.x + time + i * 0.35) * 0.15;
+        }
+
+        float checkPattern = sin(uv.x * 6.0) * cos(uv.y * 6.0);
+        float f = smoothstep(-0.6, 0.6, checkPattern);
+
+        vec3 col1 = hsl2rgb(vec3(203.0/360.0, 1.0, 0.62)); 
+        vec3 col2 = hsl2rgb(vec3(255.0/360.0, 1.0, 0.72)); 
+        vec3 col3 = hsl2rgb(vec3(158.0/360.0, 0.99, 0.59)); 
+        vec3 col4 = hsl2rgb(vec3(264.0/360.0, 1.0, 0.61)); 
+
+        vec3 mix1 = mix(col1, col2, f);
+        vec3 mix2 = mix(col3, col4, sin(time)*0.5 + 0.5);
+        vec3 finalCol = mix(mix1, mix2, uv.y);
+
+        fragColor = vec4(finalCol * 0.4, 1.0); 
+      }
+    `;
+
+    function createShader(gl, type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+
+    const positionAttributeLocation = gl.getAttribLocation(program, "position");
+    const resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
+    const timeUniformLocation = gl.getUniformLocation(program, "u_time");
+
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      -1, -1,   1, -1,   -1,  1,
+      -1,  1,   1, -1,    1,  1,
+    ]), gl.STATIC_DRAW);
+
+    const vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+    gl.enableVertexAttribArray(positionAttributeLocation);
+    gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+    function resizeCanvasToDisplaySize(canvas) {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+        return true;
+      }
+      return false;
+    }
+
+    function render(time) {
+      time *= 0.001;  
+      resizeCanvasToDisplaySize(gl.canvas);
+      gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+      gl.useProgram(program);
+      gl.bindVertexArray(vao);
+      gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+      gl.uniform1f(timeUniformLocation, time);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>
