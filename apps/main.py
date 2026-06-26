@@ -90,7 +90,7 @@ async def lifespan(app: FastAPI):
     print("[LIFESPAN] Activating live currency fetcher...")
     try:
         await update_system_rates()
-        scheduler.add_job(update_system_rates, "interval", hours=2)
+        scheduler.add_job(update_system_rates, "interval", seconds=30)
         scheduler.start()
         print("[LIFESPAN] Scheduler started — refreshing every 2 hours.")
     except Exception as e:
