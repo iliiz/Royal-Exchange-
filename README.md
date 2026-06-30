@@ -6,7 +6,7 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=Tailwind-CSS&logoColor=white)](https://tailwindcss.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-> **Live Demo:** [Deploying Soon / View Live Application](http://127.0.0.1:8000) *(Update this link once hosted on your domain or cloud provider)*
+> **Live Demo:** [View Live Application](https://royal-exchange-ge6m.onrender.com)
 
 **Exchange Royal** is a sophisticated, full-stack currency exchange platform meticulously engineered for speed, security, and an exceptional user experience. Built using a modern asynchronous Python architecture, this terminal bridges international payment gateways with real-time financial metrics, wrapped inside an immersive, high-end visual environment. It serves as a definitive proof-of-concept for secure, high-concurrency Fintech applications.
 
